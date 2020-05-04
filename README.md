@@ -6,3 +6,4 @@ part of game development course in UE4.
 03_BuldingEscape  
 PolymorphismDemo  
 04_BattleTank  
+VR_ArchitecExplorer
