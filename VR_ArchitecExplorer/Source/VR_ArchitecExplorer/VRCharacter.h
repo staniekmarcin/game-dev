@@ -30,6 +30,7 @@ private:
 
 	bool FindTeleportDestination(TArray<FVector>& OutPath, FVector& OutLocation);
 	void UpdateDestinationMarker();
+	void DrawTeleportPath(const TArray<FVector>& Path);
 	void UpdateSpline(const TArray<FVector>& Path);
 	
 	void UpdateBlinkers();
@@ -55,6 +56,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 		class USplineComponent* TeleportPath;
+
+	UPROPERTY()
+		TArray<class UStaticMeshComponent*> TeleportPathMeshPool;
 
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* DestinationMarker;
@@ -87,6 +91,12 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		class UCurveFloat* RadiusVsVelocity;
+
+	UPROPERTY(EditDefaultsOnly)
+		class UStaticMesh* TeleportArchMesh;
+
+	UPROPERTY(EditDefaultsOnly)
+		class UMaterialInterface* TeleportArchMaterial;
 
 
 };
