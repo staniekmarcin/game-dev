@@ -5,7 +5,7 @@
 			"app_key": "application.generated.ue.vr_architecexplorer-11590370.ue4editor.exe",
 			"launch_type": "url",
 			"url": "steam://launch/",
-			"action_manifest_path": "C:/Users/stanik/Desktop/GameDev/game-dev/VR_ArchitecExplorer/Config/SteamVRBindings/steamvr_manifest.json",
+			"action_manifest_path": "G:/game-dev/VR_ArchitecExplorer/Config/SteamVRBindings/steamvr_manifest.json",
 			"strings":
 			{
 				"en_us":
