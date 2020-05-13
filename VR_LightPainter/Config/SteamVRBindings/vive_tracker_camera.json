@@ -6,7 +6,19 @@
 	{
 		"/actions/main":
 		{
-			"sources": [],
+			"sources": [
+				{
+					"mode": "trigger",
+					"path": "/user/hand/right/input/trigger",
+					"inputs":
+					{
+						"click":
+						{
+							"output": "/actions/main/in/RightTrigger"
+						}
+					}
+				}
+			],
 			"poses": [
 				{
 					"output": "/actions/main/in/special1",
@@ -51,5 +63,5 @@
 			]
 		}
 	},
-	"description": ""
+	"description": "VR_LightPainter-11590370"
 }

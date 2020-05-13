@@ -5,8 +5,6 @@
 
 #include "Engine/World.h"
 
-#include "HandController.h"
-
 // Sets default values
 AVRPawn::AVRPawn()
 {
@@ -33,4 +31,13 @@ void AVRPawn::BeginPlay()
 
 	
 	
+}
+
+void AVRPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction(TEXT("RightTrigger"), EInputEvent::IE_Pressed, this, &AVRPawn::RightTriggerPressed);
+	PlayerInputComponent->BindAction(TEXT("RightTrigger"), EInputEvent::IE_Released, this, &AVRPawn::RightTriggerRealeased);
+
 }
