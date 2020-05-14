@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 
 #include "Components/InstancedStaticMeshComponent.h"
+#include "Saving/PainterSaveGame.h"
 
 #include "Stroke.generated.h"
 
@@ -18,6 +19,9 @@ public:
 	AStroke();
 	
 	void Update(FVector CursorLocation);
+
+	FStrokeState SerializeToStruct() const;
+	static AStroke* SpawnAndDeserializedFromStruct(UWorld* World, const FStrokeState& StrokeState);
 
 private:
 
@@ -46,4 +50,7 @@ private:
 
 	// State
 	FVector PreviousCursorLocation;
+
+	TArray<FVector> ControlPoints;
+
 };
