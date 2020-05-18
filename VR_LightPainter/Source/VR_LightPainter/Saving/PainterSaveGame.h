@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+
 #include "PainterSaveGame.generated.h"
 
 USTRUCT()
