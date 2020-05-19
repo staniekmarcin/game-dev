@@ -16,13 +16,7 @@ bool UActionBar::Initialize()
 	return true;
 }
 
-void UActionBar::AddButtonClicked()
+void UActionBar::SetParentPicker(APaintingPicker* NewParentPicker)
 {
-	UE_LOG(LogTemp, Warning, TEXT("CLICKED ADD"));
-}
-
-void UActionBar::DeleteButtonClicked()
-{
-	UE_LOG(LogTemp, Warning, TEXT("CLICKED DELETE"));
-
+	ParentPicker = NewParentPicker;
 }

@@ -17,8 +17,17 @@ class VR_LIGHTPAINTER_API APaintingPicker : public AActor
 public:	
 	APaintingPicker();
 
+	void AddPainting();
+
+	void ToggleDeleteMode() 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Toggle delete mode."));
+	}
+
+
 protected:
 	virtual void BeginPlay() override;
+
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -30,8 +39,5 @@ private:
 	UPROPERTY(VisibleAnywhere)
 		UWidgetComponent* ActionBar;
 
-	
-	
-
-
+	void RefreshSlots();
 };
