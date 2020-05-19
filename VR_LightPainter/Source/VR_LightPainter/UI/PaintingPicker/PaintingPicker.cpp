@@ -68,11 +68,11 @@ void APaintingPicker:: RefreshSlots()
 
 	GetPaintingGrid()->ClearPaintings();
 
-	int32 Index = 0;
-	for (FString SlotName : UPainterSaveGameIndex::Load()->GetSlotNames())
+	int32 StartOffset = CurrentPage * GetPaintingGrid()->GetNumberOfSlots();
+	auto SlotName = UPainterSaveGameIndex::Load()->GetSlotNames();
+	for (int32 i = 0;  GetPaintingGrid()->GetNumberOfSlots() && i + StartOffset < SlotName.Num(); ++i )
 	{
-		GetPaintingGrid()->AddPainting(Index, SlotName);
-		++Index;
+		GetPaintingGrid()->AddPainting(i, SlotName[i+StartOffset]);
 	}
 }
 
