@@ -3,6 +3,7 @@
 #include "Gun.h"
 
 #include "Components/SkeletalMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AGun::AGun()
 {
@@ -17,7 +18,8 @@ AGun::AGun()
 
 void AGun::PullTrigger()
 {
-	UE_LOG(LogTemp,Warning,TEXT("SHOT"));
+	//UE_LOG(LogTemp,Warning,TEXT("SHOT"));
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
 }
 
 void AGun::BeginPlay()
