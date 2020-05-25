@@ -6,6 +6,8 @@
 
 void AShooterAIController::Tick(float DeltaSeconds)
 {
+    Super::Tick(DeltaSeconds);
+    
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
     if (PlayerPawn == nullptr) return;
     
@@ -22,5 +24,4 @@ void AShooterAIController::BeginPlay()
     SetFocus(PlayerPawn);
 
     // TODO turn off focus when AI is dead
-    // TODO change focus after getting to AcceptanceRadius
    }
