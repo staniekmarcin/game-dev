@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "TL_StealthGame",
+			"Path": "G:\\game-dev\\TL_StealthGame\\Source\\TL_StealthGame.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "TL_StealthGameEditor",
+			"Path": "G:\\game-dev\\TL_StealthGame\\Source\\TL_StealthGameEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

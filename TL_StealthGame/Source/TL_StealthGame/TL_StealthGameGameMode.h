@@ -1,0 +1,19 @@
+// Copyright Epic Games, Inc. All Rights Reserved.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/GameModeBase.h"
+#include "TL_StealthGameGameMode.generated.h"
+
+UCLASS(minimalapi)
+class ATL_StealthGameGameMode : public AGameModeBase
+{
+	GENERATED_BODY()
+
+public:
+	ATL_StealthGameGameMode();
+};
+
+
+
