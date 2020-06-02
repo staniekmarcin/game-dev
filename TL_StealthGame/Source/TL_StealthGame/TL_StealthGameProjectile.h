@@ -1,10 +1,12 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+	// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "TL_StealthGameProjectile.generated.h"
+
+class UParticleSystem;
 
 UCLASS(config=Game)
 class ATL_StealthGameProjectile : public AActor
@@ -18,6 +20,9 @@ class ATL_StealthGameProjectile : public AActor
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	class UProjectileMovementComponent* ProjectileMovement;
+
+	UPROPERTY(EditDefaultsOnly, Category="FX")
+	UParticleSystem* ExplosionEffect;
 
 public:
 	ATL_StealthGameProjectile();

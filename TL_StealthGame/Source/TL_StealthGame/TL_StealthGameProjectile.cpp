@@ -3,6 +3,7 @@
 #include "TL_StealthGameProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ATL_StealthGameProjectile::ATL_StealthGameProjectile() 
 {
@@ -40,4 +41,6 @@ void ATL_StealthGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 
 		Destroy();
 	}
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
 }

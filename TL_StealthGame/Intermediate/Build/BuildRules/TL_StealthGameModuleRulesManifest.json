@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"G:\\game-dev\\TL_StealthGame\\Source\\TL_StealthGame\\TL_StealthGame.Build.cs",
-		"G:\\game-dev\\TL_StealthGame\\Source\\TL_StealthGame.Target.cs",
-		"G:\\game-dev\\TL_StealthGame\\Source\\TL_StealthGameEditor.Target.cs"
-	],
-	"EngineVersion": "4.25.0"
-}
