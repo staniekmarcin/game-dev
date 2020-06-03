@@ -38,9 +38,11 @@ void ATL_StealthGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL) && OtherComp->IsSimulatingPhysics())
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-
-		Destroy();
 	}
 
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
+
+	
+	MakeNoise(1.0f, GetInstigator());
+	Destroy();
 }
