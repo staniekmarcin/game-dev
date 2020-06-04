@@ -15,6 +15,7 @@ AAIGuard::AAIGuard()
 
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AAIGuard::OnPawnSeen);
 
+	AIGuardState = EAIState::Idle;
 }
 
 void AAIGuard::BeginPlay()
@@ -45,10 +46,16 @@ void AAIGuard::OnPawnSeen(APawn* SeenPawn)
 	{
 		GM->CompleteMission(SeenPawn, false);
 	}
+
+	SetAIGuardState(EAIState::Alerted);
 }
 
 void AAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
 {
+	if (AIGuardState == EAIState::Alerted)
+	{
+		return;
+	}
 	DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Blue, false, 10.0f);
 	UE_LOG(LogTemp, Log, TEXT("HEAR YOU"));
 
@@ -69,11 +76,32 @@ void AAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, flo
 		3.0f
 		);
 
+	SetAIGuardState(EAIState::Suspicious);
+	
 }
 
 void AAIGuard::ResetOrientation()
 {
+	if (AIGuardState == EAIState::Alerted)
+	{
+		return;
+	}
+	
 	SetActorRotation(OriginRotation);
+
+	SetAIGuardState(EAIState::Idle);
+}
+
+void AAIGuard::SetAIGuardState(EAIState NewState)
+{
+	if (AIGuardState == NewState)
+	{
+		return;
+	}
+	
+	AIGuardState = NewState;
+
+	OnStateChange(AIGuardState);
 }
 
 void AAIGuard::Tick(float DeltaTime)

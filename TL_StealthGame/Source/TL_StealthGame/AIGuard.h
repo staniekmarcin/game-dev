@@ -8,6 +8,13 @@
 
 class UPawnSensingComponent;
 
+UENUM(BlueprintType)
+enum class EAIState : uint8
+{
+	Idle,
+	Suspicious,
+	Alerted
+};
 UCLASS()
 class TL_STEALTHGAME_API AAIGuard : public ACharacter
 {
@@ -32,7 +39,10 @@ protected:
 	void ResetOrientation();
 	FTimerHandle TimerHandle_ResetOrientation;
 
-	
+	EAIState AIGuardState;
+	void SetAIGuardState(EAIState NewState);
+	UFUNCTION(BlueprintImplementableEvent, Category="AI")
+	void OnStateChange(EAIState NewState);
 public:	
 	virtual void Tick(float DeltaTime) override;
 
