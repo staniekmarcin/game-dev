@@ -6,6 +6,8 @@
 #include "DrawDebugHelpers.h"
 #include "TL_StealthGameGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Controller.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 AAIGuard::AAIGuard()
 {
@@ -24,6 +26,11 @@ void AAIGuard::BeginPlay()
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &AAIGuard::OnNoiseHeard); // In BeginPlay cause some bug
 
 	OriginRotation = GetActorRotation();
+
+	if (bPatrol)
+	{
+		MovetoNextPatrolPoint();
+	}
 }
 
 void AAIGuard::OnPawnSeen(APawn* SeenPawn)
@@ -48,6 +55,12 @@ void AAIGuard::OnPawnSeen(APawn* SeenPawn)
 	}
 
 	SetAIGuardState(EAIState::Alerted);
+	
+	AController* AIController = GetController();
+	if (AIController)
+	{
+		AIController->StopMovement();
+	}
 }
 
 void AAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
@@ -77,7 +90,12 @@ void AAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, flo
 		);
 
 	SetAIGuardState(EAIState::Suspicious);
-	
+
+	AController* AIController = GetController();
+	if (AIController)
+	{
+		AIController->StopMovement();
+	}
 }
 
 void AAIGuard::ResetOrientation()
@@ -90,6 +108,11 @@ void AAIGuard::ResetOrientation()
 	SetActorRotation(OriginRotation);
 
 	SetAIGuardState(EAIState::Idle);
+
+	if (bPatrol)
+	{
+		MovetoNextPatrolPoint();
+	}
 }
 
 void AAIGuard::SetAIGuardState(EAIState NewState)
@@ -108,6 +131,32 @@ void AAIGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (CurrentPatrolPoint)
+	{
+		FVector Delta = GetActorLocation() - CurrentPatrolPoint->GetActorLocation();
+		float DistanceToGoal = Delta.Size();
+
+		if (DistanceToGoal < 50)
+		{
+			MovetoNextPatrolPoint();
+		}
+
+	}
+
+}
+
+void AAIGuard::MovetoNextPatrolPoint()
+{
+	if (CurrentPatrolPoint == nullptr || CurrentPatrolPoint == SecondPatrolPoint)
+	{
+		CurrentPatrolPoint = FirstPatrolPoint;
+	}
+	else
+	{
+		CurrentPatrolPoint = SecondPatrolPoint;
+	}
+
+	UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(), CurrentPatrolPoint);
 }
 
 
