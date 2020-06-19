@@ -37,7 +37,7 @@ void APawnBase::RotateTurret(FVector LookAtTarget)
 void APawnBase::Fire()
 {
 	// Spawn projectile at spawnpoint
-	UE_LOG(LogTemp,Warning,TEXT("FIRE"));
+	// UE_LOG(LogTemp,Warning,TEXT("FIRE"));
 
 	
 	if (ProjectileClass)
