@@ -22,9 +22,7 @@ public:
 	
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void BeginPlay() override;
 
-	
 private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement", meta = (AllowPrivateAccess = "true"))
@@ -40,6 +38,10 @@ private:
 
 	float ReturnDistanceToPlayer();
 protected:
+	
+	virtual void BeginPlay() override;
+
+	virtual void HandleDestruction() override;
 	
 	
 };

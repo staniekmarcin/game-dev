@@ -2,6 +2,8 @@
 
 #include "PawnBase.h"
 
+#include "Kismet/KismetMathLibrary.h"
+
 APawnBase::APawnBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,11 +24,20 @@ APawnBase::APawnBase()
 void APawnBase::RotateTurret(FVector LookAtTarget)
 {
 	// Update TurretMesh rotation toface towards the LookAtTarget passed in from the child Class.
+
+	// Find Rotation value to look at
+	FVector StartLocation = TurretMesh->GetComponentLocation();
+	FRotator TurretRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, FVector(LookAtTarget.X, LookAtTarget.Y, TurretMesh->GetComponentLocation().Z));
+
+	// Rotate turret
+	TurretMesh->SetWorldRotation(TurretRotation);
 }
 
 void APawnBase::Fire()
 {
 	// Spawn projectile at spawnpoint
+	UE_LOG(LogTemp,Warning,TEXT("FIRE"));
+
 }
 
 void APawnBase::HandleDestruction()
