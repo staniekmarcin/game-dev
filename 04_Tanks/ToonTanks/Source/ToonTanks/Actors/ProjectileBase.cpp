@@ -26,10 +26,8 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UP
 	FVector NormalImpulse, const FHitResult& Hit)
 {
 	AActor* MyOwner = GetOwner();
-	UE_LOG(LogTemp, Warning, TEXT("ON HIT EVENT"));
 	if (!MyOwner)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("NO Owner in Projetile"));
 		return;
 	}
 	if (OtherActor != nullptr && OtherActor != this && OtherActor != MyOwner)
@@ -37,7 +35,7 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UP
 		UGameplayStatics::ApplyDamage(OtherActor, Damage, MyOwner->GetInstigatorController(), this, DamageType);
 
 		Destroy();
-		UE_LOG(LogTemp, Warning, TEXT("ONHIT EVENT AFTER CHECK"));
+		// UE_LOG(LogTemp, Warning, TEXT("ONHIT EVENT AFTER CHECK"));
 	}
 
 	// TODO Efects

@@ -32,6 +32,7 @@ private:
 public:
 	APawnBase();
 
+	void PawnDestroyed();
 protected:
 
 	void RotateTurret(FVector LookAtTarget);

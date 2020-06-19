@@ -31,10 +31,10 @@ void UHealthComponent::BeginPlay()
 	}
 }
 
-void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
-	AController* IntigatedBY, AActor* DamageCauser)
+void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType,
+	class AController* IntigatedBy, AActor* DamageActor)
 {
-	if (Damage == 0)
+	if (Damage == 0 || Health == 0)
 	{
 		return;
 	}
