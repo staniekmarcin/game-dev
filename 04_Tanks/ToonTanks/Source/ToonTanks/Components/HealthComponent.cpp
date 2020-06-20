@@ -9,14 +9,13 @@ UHealthComponent::UHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	Health = DefaultHealth;
-
-	
 }
 
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Health = DefaultHealth;
 
 	GameModeRef = Cast<ATankGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
