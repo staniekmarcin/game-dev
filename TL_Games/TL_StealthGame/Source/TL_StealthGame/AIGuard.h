@@ -39,7 +39,12 @@ protected:
 	void ResetOrientation();
 	FTimerHandle TimerHandle_ResetOrientation;
 
+	UPROPERTY(ReplicatedUsing=OnRep_GuardState)
 	EAIState AIGuardState;
+
+	UFUNCTION()
+	void OnRep_GuardState();
+	
 	void SetAIGuardState(EAIState NewState);
 	UFUNCTION(BlueprintImplementableEvent, Category="AI")
 	void OnStateChange(EAIState NewState);

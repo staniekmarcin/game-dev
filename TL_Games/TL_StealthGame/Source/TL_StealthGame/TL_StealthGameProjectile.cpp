@@ -30,6 +30,9 @@ ATL_StealthGameProjectile::ATL_StealthGameProjectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 void ATL_StealthGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -42,7 +45,11 @@ void ATL_StealthGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
 
-	
-	MakeNoise(1.0f, GetInstigator());
-	Destroy();
+
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		MakeNoise(1.0f, GetInstigator());
+		
+		Destroy();
+	}
 }

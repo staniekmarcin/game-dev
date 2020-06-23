@@ -85,13 +85,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	uint32 bUsingMotionControllers : 1;
 
-	UPROPERTY(BlueprintReadOnly, Category="Gameplay")
+	UPROPERTY(Replicated, BlueprintReadOnly, Category="Gameplay")
 	bool bIsCarryingObjective;
 	
 protected:
 	
 	/** Fires a projectile. */
 	void OnFire();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerFire();
 
 	/** Resets HMD orientation and position in VR. */
 	void OnResetVR();
@@ -146,5 +149,7 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+
+	virtual void Tick(float DeltaTime) override;
 };
 

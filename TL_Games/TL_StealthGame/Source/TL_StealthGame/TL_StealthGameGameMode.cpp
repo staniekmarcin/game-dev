@@ -3,6 +3,7 @@
 #include "TL_StealthGameGameMode.h"
 #include "TL_StealthGameHUD.h"
 #include "TL_StealthGameCharacter.h"
+#include "TL_StealthGameGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -15,6 +16,8 @@ ATL_StealthGameGameMode::ATL_StealthGameGameMode()
 
 	// use our custom HUD class
 	HUDClass = ATL_StealthGameHUD::StaticClass();
+
+	GameStateClass = ATL_StealthGameGameState::StaticClass();
 }
 
 void ATL_StealthGameGameMode::CompleteMission(APawn* InstagatorPawn, bool bMissionSuccess)
@@ -22,7 +25,7 @@ void ATL_StealthGameGameMode::CompleteMission(APawn* InstagatorPawn, bool bMissi
 	if (InstagatorPawn)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Input Disabled"));
-		InstagatorPawn->DisableInput(nullptr);
+		
 
 		if (SpectatingViewpointClass)
 		{
@@ -32,11 +35,16 @@ void ATL_StealthGameGameMode::CompleteMission(APawn* InstagatorPawn, bool bMissi
 			{
 				AActor* NewViewTarget = ReturnedActors[0];
 
-				APlayerController* PC = Cast<APlayerController>(InstagatorPawn->GetController());
-				if (PC)
+				for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
 				{
-					PC->SetViewTargetWithBlend(NewViewTarget, 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+					APlayerController* PC = It->Get();
+					if (PC)
+					{
+						PC->SetViewTargetWithBlend(NewViewTarget, 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+
+					}
 				}
+				
 			}
 		}
 		else
@@ -44,7 +52,12 @@ void ATL_StealthGameGameMode::CompleteMission(APawn* InstagatorPawn, bool bMissi
 			UE_LOG(LogTemp, Warning, TEXT("There is no actor to set new viewport"))
 		}
 	}
-	
+
+	ATL_StealthGameGameState* GS = GetGameState<ATL_StealthGameGameState>();
+	if (GS)
+	{
+		GS->MulticastOnMissionCompleted(InstagatorPawn, bMissionSuccess);
+	}
 	OnMissionCompleted(InstagatorPawn, bMissionSuccess);
 	
 }

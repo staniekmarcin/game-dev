@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Controller.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 AAIGuard::AAIGuard()
 {
@@ -115,6 +116,12 @@ void AAIGuard::ResetOrientation()
 	}
 }
 
+void AAIGuard::OnRep_GuardState()
+{
+	OnStateChange(AIGuardState);
+
+}
+
 void AAIGuard::SetAIGuardState(EAIState NewState)
 {
 	if (AIGuardState == NewState)
@@ -124,7 +131,8 @@ void AAIGuard::SetAIGuardState(EAIState NewState)
 	
 	AIGuardState = NewState;
 
-	OnStateChange(AIGuardState);
+	OnRep_GuardState();
+	
 }
 
 void AAIGuard::Tick(float DeltaTime)
@@ -159,5 +167,10 @@ void AAIGuard::MovetoNextPatrolPoint()
 	UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(), CurrentPatrolPoint);
 }
 
+void AAIGuard::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(AAIGuard, AIGuardState);
+}
 

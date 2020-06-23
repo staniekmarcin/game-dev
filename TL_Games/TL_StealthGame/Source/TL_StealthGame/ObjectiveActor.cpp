@@ -16,7 +16,8 @@ AObjectiveActor::AObjectiveActor()
 	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	SphereComp->SetupAttachment(MeshComp);
-	
+
+	SetReplicates(true);
 }
 
 void AObjectiveActor::BeginPlay()
@@ -36,12 +37,15 @@ void AObjectiveActor::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	PlayEffects();
 
+	
 	ATL_StealthGameCharacter* MyCharacter = Cast<ATL_StealthGameCharacter>(OtherActor);
 	if (MyCharacter)
 	{
 		MyCharacter->bIsCarryingObjective = true;
 
 		Destroy();
-	}
+	} 
+	
 }
+	
 

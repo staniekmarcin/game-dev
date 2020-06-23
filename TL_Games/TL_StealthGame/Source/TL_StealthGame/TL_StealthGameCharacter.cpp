@@ -12,6 +12,7 @@
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 #include "Components/PawnNoiseEmitterComponent.h"
+#include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -35,7 +36,7 @@ ATL_StealthGameCharacter::ATL_StealthGameCharacter()
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	Mesh1P->SetOnlyOwnerSee(true);
+	Mesh1P->SetOnlyOwnerSee(false);
 	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
@@ -44,7 +45,7 @@ ATL_StealthGameCharacter::ATL_StealthGameCharacter()
 
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	FP_Gun->SetOnlyOwnerSee(false);			// only the owning player will see this mesh
 	FP_Gun->bCastDynamicShadow = false;
 	FP_Gun->CastShadow = false;
 	// FP_Gun->SetupAttachment(Mesh1P, TEXT("GripPoint"));
@@ -70,7 +71,7 @@ ATL_StealthGameCharacter::ATL_StealthGameCharacter()
 	// Create a gun and attach it to the right-hand VR controller.
 	// Create a gun mesh component
 	VR_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("VR_Gun"));
-	VR_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	VR_Gun->SetOnlyOwnerSee(false);			// only the owning player will see this mesh
 	VR_Gun->bCastDynamicShadow = false;
 	VR_Gun->CastShadow = false;
 	VR_Gun->SetupAttachment(R_MotionController);
@@ -85,6 +86,7 @@ ATL_StealthGameCharacter::ATL_StealthGameCharacter()
 	//bUsingMotionControllers = true;
 
 	NoiseEmitterComp = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
+
 	
 }
 
@@ -144,34 +146,9 @@ void ATL_StealthGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 void ATL_StealthGameCharacter::OnFire()
 {
-	// try and fire a projectile
-	if (ProjectileClass != NULL)
-	{
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			if (bUsingMotionControllers)
-			{
-				const FRotator SpawnRotation = VR_MuzzleLocation->GetComponentRotation();
-				const FVector SpawnLocation = VR_MuzzleLocation->GetComponentLocation();
-				World->SpawnActor<ATL_StealthGameProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-			}
-			else
-			{
-				const FRotator SpawnRotation = GetControlRotation();
-				// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-				const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
 
-				//Set Spawn Collision Handling Override
-				FActorSpawnParameters ActorSpawnParams;
-				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-				ActorSpawnParams.Instigator = this;
-				
-				// spawn the projectile at the muzzle
-				World->SpawnActor<ATL_StealthGameProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			}
-		}
-	}
+	ServerFire();
+	
 
 	// try and play the sound if specified
 	if (FireSound != NULL)
@@ -189,6 +166,30 @@ void ATL_StealthGameCharacter::OnFire()
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+}
+
+void ATL_StealthGameCharacter::ServerFire_Implementation()
+{
+	// try and fire a projectile
+	if (ProjectileClass != NULL)
+	{
+		const FRotator SpawnRotation = GetControlRotation();
+		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+
+		//Set Spawn Collision Handling Override
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+		ActorSpawnParams.Instigator = this;
+		
+		// spawn the projectile at the muzzle
+		GetWorld()->SpawnActor<ATL_StealthGameProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+	}
+}
+
+bool ATL_StealthGameCharacter::ServerFire_Validate()
+{
+	return true;
 }
 
 void ATL_StealthGameCharacter::OnResetVR()
@@ -303,3 +304,27 @@ bool ATL_StealthGameCharacter::EnableTouchscreenMovement(class UInputComponent* 
 	
 	return false;
 }
+
+void ATL_StealthGameCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (!IsLocallyControlled())
+	{
+		FRotator NewRot = FirstPersonCameraComponent->GetRelativeRotation();
+		NewRot.Pitch = RemoteViewPitch * 360.0f / 255.0f;
+
+		FirstPersonCameraComponent->SetRelativeRotation(NewRot);
+	}
+
+}
+
+void ATL_StealthGameCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ATL_StealthGameCharacter, bIsCarryingObjective);
+
+	//DOREPLIFETIME_CONDITION(ATL_StealthGameCharacter, bIsCarryingObjective, COND_OwnerOnly);
+}
+
